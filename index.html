@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akemi - Gravações à Laser</title>
+  <meta name="description" content="Portfolio de gravações à laser personalizadas. Copos, placas, chaveiros e muito mais. Entre em contato pelo WhatsApp!">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' https://images.ctfassets.net https://*.ctfassets.net data:; connect-src https://cdn.contentful.com;">
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <h1 class="logo">Akemi</h1>
+      <p class="tagline">Gravações à Laser</p>
+    </div>
+  </header>
+
+  <!-- Portfolio -->
+  <main class="portfolio">
+    <div class="container">
+      <h2 class="section-title">Nossos Trabalhos</h2>
+      <div id="filters" class="filters"></div>
+      <div id="gallery" class="gallery">
+        <!-- Fotos carregadas via Contentful -->
+      </div>
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Carregando portfolio...</p>
+      </div>
+      <div id="empty" class="empty-state" hidden>
+        <p>Em breve novos trabalhos por aqui!</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal de visualização -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-label="Visualização de imagem" hidden>
+    <button class="modal-close" aria-label="Fechar">&times;</button>
+    <button id="modal-prev" class="modal-arrow modal-prev" aria-label="Foto anterior" hidden>&#8249;</button>
+    <button id="modal-next" class="modal-arrow modal-next" aria-label="Próxima foto" hidden>&#8250;</button>
+    <div class="modal-spinner"></div>
+    <img id="modal-img" class="modal-img" src="" alt="">
+    <div id="modal-counter" class="modal-counter" hidden></div>
+    <div id="modal-caption" class="modal-caption"></div>
+  </div>
+
+  <!-- Botão WhatsApp flutuante -->
+  <a href="https://wa.me/5514991336103?text=Ol%C3%A1!%20Vi%20seu%20portfolio%20e%20gostaria%20de%20saber%20mais%20sobre%20grava%C3%A7%C3%B5es%20%C3%A0%20laser."
+     class="whatsapp-btn"
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Entrar em contato pelo WhatsApp">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+    <span class="whatsapp-text">Faça seu pedido</span>
+  </a>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <a href="https://www.instagram.com/akemimiyashiro"
+         class="instagram-link"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Siga no Instagram">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.17.054 1.97.24 2.43.403a4.088 4.088 0 011.523.99 4.088 4.088 0 01.99 1.524c.163.46.349 1.26.403 2.43.058 1.265.07 1.645.07 4.849s-.012 3.584-.07 4.85c-.054 1.17-.24 1.97-.403 2.43a4.088 4.088 0 01-.99 1.523 4.088 4.088 0 01-1.524.99c-.46.163-1.26.349-2.43.403-1.265.058-1.645.07-4.849.07s-3.584-.012-4.85-.07c-1.17-.054-1.97-.24-2.43-.403a4.088 4.088 0 01-1.523-.99 4.088 4.088 0 01-.99-1.524c-.163-.46-.349-1.26-.403-2.43C2.175 15.584 2.163 15.204 2.163 12s.012-3.584.07-4.85c.054-1.17.24-1.97.403-2.43a4.088 4.088 0 01.99-1.523A4.088 4.088 0 015.15 2.207c.46-.163 1.26-.349 2.43-.403C8.845 2.175 9.225 2.163 12 2.163M12 0C8.741 0 8.333.014 7.053.072 5.775.13 4.902.333 4.14.63a5.876 5.876 0 00-2.126 1.384A5.876 5.876 0 00.63 4.14C.333 4.902.13 5.775.072 7.053.014 8.333 0 8.741 0 12s.014 3.668.072 4.948c.058 1.277.261 2.15.558 2.913a5.876 5.876 0 001.384 2.126A5.876 5.876 0 004.14 23.37c.763.297 1.636.5 2.913.558C8.333 23.986 8.741 24 12 24s3.668-.014 4.948-.072c1.277-.058 2.15-.261 2.913-.558a5.876 5.876 0 002.126-1.384 5.876 5.876 0 001.384-2.126c.297-.763.5-1.636.558-2.913.058-1.28.072-1.688.072-4.948s-.014-3.668-.072-4.948c-.058-1.277-.261-2.15-.558-2.913a5.876 5.876 0 00-1.384-2.126A5.876 5.876 0 0019.86.63C19.098.333 18.225.13 16.948.072 15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+        </svg>
+        <span class="instagram-text">@akemimiyashiro</span>
+      </a>
+      <p>&copy; 2026 Akemi &mdash; Gravações à Laser</p>
+      <span></span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

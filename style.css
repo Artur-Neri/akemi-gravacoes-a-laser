@@ -1,0 +1,479 @@
+/* ========== Reset & Base ========== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: #2b2020;
+  background-color: #f7f2f0;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ========== Header ========== */
+.header {
+  text-align: center;
+  padding: 60px 24px 40px;
+  background: linear-gradient(135deg, #2a0a0a 0%, #4a1215 50%, #611a1e 100%);
+  border-bottom: 3px solid #c4937a;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.8rem;
+  font-weight: 600;
+  color: #f5ece8;
+  letter-spacing: 2px;
+}
+
+.tagline {
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: #c4937a;
+  margin-top: 8px;
+  letter-spacing: 1px;
+}
+
+.instagram-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  /* color: #a08a84;*/
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.instagram-link:hover {
+  opacity: 1;
+  color: #c4937a;
+}
+
+.instagram-text {
+  display: inline;
+}
+
+/* ========== Portfolio ========== */
+.portfolio {
+  flex: 1;
+  padding: 60px 0;
+}
+
+.section-title {
+  /* font-family: 'Playfair Display', serif; */
+  font-size: 1.6rem;
+  /* font-weight: 400; */
+  text-align: center;
+  margin-bottom: 40px;
+  color: #4a1215;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.filter-btn {
+  padding: 8px 20px;
+  border: 1.5px solid #d4c0b8;
+  border-radius: 50px;
+  background: transparent;
+  color: #6b4a42;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  border-color: #8a3a3a;
+  color: #4a1215;
+}
+
+.filter-btn.active {
+  background: #4a1215;
+  border-color: #4a1215;
+  color: #f5ece8;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(74, 18, 21, 0.08);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(74, 18, 21, 0.16);
+}
+
+.gallery-item img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-item-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(20, 5, 5, 0.7);
+  color: #f5ece8;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  pointer-events: none;
+}
+
+.gallery-item-info {
+  padding: 14px 16px;
+  border-top: 2px solid #f0e0da;
+}
+
+.gallery-item-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #2a0a0a;
+}
+
+.gallery-item-desc {
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: #8a706a;
+  margin-top: 4px;
+}
+
+/* ========== Loading ========== */
+.loading {
+  text-align: center;
+  padding: 60px 0;
+  color: #8a706a;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #ecdbd5;
+  border-top-color: #611a1e;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 0;
+  color: #a08a84;
+  font-size: 1.1rem;
+}
+
+/* ========== Modal ========== */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(20, 5, 5, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: #f5ece8;
+  font-size: 2.5rem;
+  cursor: pointer;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.modal-close:hover {
+  opacity: 1;
+}
+
+.modal-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(20, 5, 5, 0.5);
+  border: none;
+  color: #f5ece8;
+  font-size: 3rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s, background 0.2s;
+  z-index: 1001;
+}
+
+.modal-arrow:hover {
+  opacity: 1;
+  background: rgba(74, 18, 21, 0.7);
+}
+
+.modal-arrow[hidden] {
+  display: none;
+}
+
+.modal-prev {
+  left: 16px;
+}
+
+.modal-next {
+  right: 16px;
+}
+
+.modal-img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+  transition: opacity 0.25s ease;
+}
+
+.modal-img.is-loading {
+  opacity: 0.15;
+}
+
+.modal-spinner {
+  display: none;
+  position: absolute;
+  top: calc(50% - 20px);
+  left: calc(50% - 20px);
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(245, 236, 232, 0.2);
+  border-top-color: #c4937a;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.modal.is-loading .modal-spinner {
+  display: block;
+}
+
+.modal-counter {
+  color: #a08a84;
+  font-size: 0.85rem;
+  margin-top: 10px;
+  font-weight: 400;
+}
+
+.modal-counter[hidden] {
+  display: none;
+}
+
+.modal-caption {
+  color: #c4937a;
+  margin-top: 16px;
+  font-size: 0.95rem;
+  text-align: center;
+  max-width: 600px;
+}
+
+/* ========== WhatsApp Button ========== */
+.whatsapp-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #25D366;
+  color: #fff;
+  text-decoration: none;
+  padding: 14px 24px;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.whatsapp-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 24px rgba(37, 211, 102, 0.45);
+}
+
+.whatsapp-text {
+  display: inline;
+}
+
+/* ========== Footer ========== */
+.footer {
+  padding: 32px 24px;
+  background: #2a0a0a;
+  border-top: 3px solid #c4937a;
+  color: #a08a84;
+  font-size: 0.85rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+}
+
+.footer-grid > :first-child {
+  justify-self: start;
+}
+
+.footer-grid > :nth-child(2) {
+  justify-self: center;
+  text-align: center;
+}
+
+.footer-grid > :last-child {
+  justify-self: end;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+  .header {
+    padding: 40px 24px 28px;
+  }
+
+  .logo {
+    font-size: 2.2rem;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+  }
+
+  .gallery-item-info {
+    padding: 10px 12px;
+  }
+
+  .gallery-item-title {
+    font-size: 0.85rem;
+  }
+
+  .gallery-item-desc {
+    font-size: 0.78rem;
+  }
+
+  .modal-arrow {
+    width: 40px;
+    height: 40px;
+    font-size: 2.2rem;
+  }
+
+  .modal-prev {
+    left: 8px;
+  }
+
+  .modal-next {
+    right: 8px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .footer-grid > :first-child,
+  .footer-grid > :nth-child(2),
+  .footer-grid > :last-child {
+    justify-self: center;
+  }
+
+  .footer-grid > :last-child {
+    display: none;
+  }
+
+  .whatsapp-text {
+    display: none;
+  }
+
+  .whatsapp-btn {
+    padding: 16px;
+    border-radius: 50%;
+  }
+
+  .portfolio {
+    padding: 40px 0;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    margin-bottom: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .gallery-item {
+    border-radius: 6px;
+  }
+}
