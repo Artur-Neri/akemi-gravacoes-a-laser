@@ -146,13 +146,15 @@ filters.addEventListener('click', (e) => {
   if (!btn) return;
 
   const { type, filter } = btn.dataset;
-  if (type === 'tema')   activeTema   = filter;
-  if (type === 'modelo') activeModelo = filter;
+  if (type === 'tema') {
+    activeTema   = filter;
+    activeModelo = 'todos';
+  } else if (type === 'modelo') {
+    activeModelo = filter;
+    activeTema   = 'todos';
+  }
 
-  btn.closest('.filter-group')
-     .querySelectorAll('.filter-btn')
-     .forEach((b) => b.classList.toggle('active', b === btn));
-
+  renderFilters();
   renderGallery(getFilteredItems());
 });
 
