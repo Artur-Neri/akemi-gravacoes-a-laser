@@ -30,8 +30,10 @@ let carouselIndex = 0;
 let carouselCaption = '';
 let lastFocusedElement = null;
 let allItems = [];
-let activeFilter = 'todos';
-let categoriesMap = {}; // preenchido dinamicamente após fetch
+let activeTema = 'todos';
+let activeModelo = 'todos';
+let temaMap = {};
+let modeloMap = {};
 
 const filters = document.getElementById('filters');
 
@@ -96,18 +98,24 @@ function parseItems(data) {
         .join(' ');
     }
 
-    // categorias vêm como array de strings do Contentful
-    // key: lowercase para filtro; label: original para exibição
-    const categoryEntries = Array.isArray(fields.categoria)
-      ? fields.categoria.map((c) => ({ key: c.toLowerCase().trim(), label: c.trim() }))
+    // tema (key lowercase para filtro, label original para exibição)
+    const temaEntries = Array.isArray(fields.tema)
+      ? fields.tema.map((c) => ({ key: c.toLowerCase().trim(), label: c.trim() }))
+      : [];
+
+    // modelo (mesmo padrão)
+    const modeloEntries = Array.isArray(fields.modelo)
+      ? fields.modelo.map((c) => ({ key: c.toLowerCase().trim(), label: c.trim() }))
       : [];
 
     return {
       title: fields.titulo || '',
       description,
       images,
-      categories: categoryEntries.map((e) => e.key),
-      categoryLabels: categoryEntries.map((e) => e.label),
+      temas: temaEntries.map((e) => e.key),
+      temaLabels: temaEntries.map((e) => e.label),
+      modelos: modeloEntries.map((e) => e.key),
+      modeloLabels: modeloEntries.map((e) => e.label),
     };
   });
 }
@@ -116,29 +124,44 @@ function parseItems(data) {
 // Renderizar galeria
 // ============================================================
 function renderFilters() {
-  const entries = [['todos', 'Todos'], ...Object.entries(categoriesMap)];
+  const temaEntries   = [['todos', 'Todos'], ...Object.entries(temaMap)];
+  const modeloEntries = [['todos', 'Todos'], ...Object.entries(modeloMap)];
 
-  filters.innerHTML = entries
-    .map(
-      ([key, label]) =>
-        `<button class="filter-btn${key === activeFilter ? ' active' : ''}" data-filter="${key}">${escapeHtml(label)}</button>`
-    )
-    .join('');
+  const makeBtn = (type, key, label, active) =>
+    `<button class="filter-btn${active ? ' active' : ''}" data-type="${type}" data-filter="${key}">${escapeHtml(label)}</button>`;
+
+  filters.innerHTML = `
+    <div class="filter-group">
+      <span class="filter-group-label">Tema</span>
+      ${temaEntries.map(([k, l]) => makeBtn('tema', k, l, k === activeTema)).join('')}
+    </div>
+    <div class="filter-group">
+      <span class="filter-group-label">Modelo</span>
+      ${modeloEntries.map(([k, l]) => makeBtn('modelo', k, l, k === activeModelo)).join('')}
+    </div>`;
 }
 
 filters.addEventListener('click', (e) => {
   const btn = e.target.closest('.filter-btn');
   if (!btn) return;
 
-  activeFilter = btn.dataset.filter;
-  filters.querySelector('.filter-btn.active')?.classList.remove('active');
-  btn.classList.add('active');
+  const { type, filter } = btn.dataset;
+  if (type === 'tema')   activeTema   = filter;
+  if (type === 'modelo') activeModelo = filter;
+
+  btn.closest('.filter-group')
+     .querySelectorAll('.filter-btn')
+     .forEach((b) => b.classList.toggle('active', b === btn));
+
   renderGallery(getFilteredItems());
 });
 
 function getFilteredItems() {
-  if (activeFilter === 'todos') return allItems;
-  return allItems.filter((item) => item.categories.includes(activeFilter));
+  return allItems.filter((item) => {
+    const temaOk   = activeTema   === 'todos' || item.temas.includes(activeTema);
+    const modeloOk = activeModelo === 'todos' || item.modelos.includes(activeModelo);
+    return temaOk && modeloOk;
+  });
 }
 
 function renderGallery(items) {
@@ -320,12 +343,15 @@ async function init() {
 
   allItems = await fetchPortfolio();
 
-  // Constrói o mapa de categorias a partir da resposta da API
-  categoriesMap = {};
+  // Constrói os mapas de tema e modelo a partir da resposta da API
+  temaMap = {};
+  modeloMap = {};
   for (const item of allItems) {
-    for (let i = 0; i < item.categories.length; i++) {
-      const key = item.categories[i];
-      if (!categoriesMap[key]) categoriesMap[key] = item.categoryLabels[i];
+    for (let i = 0; i < item.temas.length; i++) {
+      if (!temaMap[item.temas[i]]) temaMap[item.temas[i]] = item.temaLabels[i];
+    }
+    for (let i = 0; i < item.modelos.length; i++) {
+      if (!modeloMap[item.modelos[i]]) modeloMap[item.modelos[i]] = item.modeloLabels[i];
     }
   }
 

@@ -90,10 +90,28 @@ body {
 
 .filters {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.filter-group {
+  display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   gap: 8px;
-  margin-bottom: 32px;
+}
+
+.filter-group-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #a08a84;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  min-width: 52px;
+  text-align: right;
 }
 
 .filter-btn {
