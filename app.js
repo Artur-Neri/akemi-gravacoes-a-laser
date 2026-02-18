@@ -186,11 +186,11 @@ function renderGallery(items) {
         <img src="${escapeAttr(item.images[0])}?w=600&amp;h=600&amp;fit=fill&amp;q=80&amp;fm=webp"
              alt="${escapeAttr(item.title)}"
              loading="lazy">
-        ${item.temaLabels.length > 0 ? `<div class="gallery-item-tags">${item.temaLabels.map((t) => `<span class="gallery-item-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
         ${item.images.length > 1 ? `<span class="gallery-item-badge">${item.images.length} fotos</span>` : ''}
         ${
-          item.title || item.description
+          item.title || item.description || item.temaLabels.length > 0
             ? `<div class="gallery-item-info">
+                ${item.temaLabels.length > 0 ? `<div class="gallery-item-tags">${item.temaLabels.map((t) => `<span class="gallery-item-tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
                 ${item.title ? `<p class="gallery-item-title">${escapeHtml(item.title)}</p>` : ''}
                 ${item.description ? `<p class="gallery-item-desc">${escapeHtml(item.description)}</p>` : ''}
                </div>`
