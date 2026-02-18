@@ -31,17 +31,8 @@ let carouselCaption = '';
 let lastFocusedElement = null;
 let allItems = [];
 let activeFilter = 'todos';
+let categoriesMap = {}; // preenchido dinamicamente após fetch
 
-const CATEGORIAS = {
-  todos: 'Todos',
-  anime: 'Anime',
-  basico: 'Básico',
-  clube: 'Clube',
-  fofo: 'Fofo',
-  japao: 'Japão',
-  profissao: 'Profissão',
-  tipografia: 'Tipografia',
-};
 const filters = document.getElementById('filters');
 
 // ============================================================
@@ -106,15 +97,17 @@ function parseItems(data) {
     }
 
     // categorias vêm como array de strings do Contentful
-    const categories = Array.isArray(fields.categoria)
-      ? fields.categoria.map((c) => c.toLowerCase())
+    // key: lowercase para filtro; label: original para exibição
+    const categoryEntries = Array.isArray(fields.categoria)
+      ? fields.categoria.map((c) => ({ key: c.toLowerCase().trim(), label: c.trim() }))
       : [];
 
     return {
       title: fields.titulo || '',
       description,
       images,
-      categories,
+      categories: categoryEntries.map((e) => e.key),
+      categoryLabels: categoryEntries.map((e) => e.label),
     };
   });
 }
@@ -123,14 +116,9 @@ function parseItems(data) {
 // Renderizar galeria
 // ============================================================
 function renderFilters() {
-  // Descobre quais categorias existem nos itens carregados
-  const usedCategories = new Set();
-  for (const item of allItems) {
-    for (const cat of item.categories) usedCategories.add(cat);
-  }
+  const entries = [['todos', 'Todos'], ...Object.entries(categoriesMap)];
 
-  filters.innerHTML = Object.entries(CATEGORIAS)
-    .filter(([key]) => key === 'todos' || usedCategories.has(key))
+  filters.innerHTML = entries
     .map(
       ([key, label]) =>
         `<button class="filter-btn${key === activeFilter ? ' active' : ''}" data-filter="${key}">${escapeHtml(label)}</button>`
@@ -331,6 +319,16 @@ async function init() {
   }
 
   allItems = await fetchPortfolio();
+
+  // Constrói o mapa de categorias a partir da resposta da API
+  categoriesMap = {};
+  for (const item of allItems) {
+    for (let i = 0; i < item.categories.length; i++) {
+      const key = item.categories[i];
+      if (!categoriesMap[key]) categoriesMap[key] = item.categoryLabels[i];
+    }
+  }
+
   renderFilters();
   renderGallery(allItems);
 }
