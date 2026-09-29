@@ -1,12 +1,14 @@
 // ============================================================
-// Configuração do Contentful
-// Substitua pelos seus dados após criar o space no Contentful
+// Configuração do Directus (self-hosted)
 // ============================================================
 const CONFIG = {
-  spaceId: 'evyvfnl7b8lc',
-  accessToken: 'Ga8S3DR6Gpg8KZHeRFngjTey5ID2fPtmgF2-SZChSns',
-  contentType: 'portfolioItem',
+  baseUrl: 'https://cms.arturneri.me',
+  collection: 'trabalhos',
 };
+
+// Parâmetros de transformação de imagem do Directus
+const THUMB_PARAMS = 'width=600&height=600&fit=cover&quality=80&format=webp';
+const FULL_PARAMS  = 'width=1200&quality=85&format=webp';
 
 // ============================================================
 // Elementos do DOM
@@ -38,14 +40,13 @@ let modeloMap = {};
 const filters = document.getElementById('filters');
 
 // ============================================================
-// Buscar itens do Contentful
+// Buscar itens do Directus
 // ============================================================
 async function fetchPortfolio() {
   const url =
-    `https://cdn.contentful.com/spaces/${CONFIG.spaceId}/entries` +
-    `?access_token=${CONFIG.accessToken}` +
-    `&content_type=${CONFIG.contentType}` +
-    `&order=-sys.createdAt`;
+    `${CONFIG.baseUrl}/items/${CONFIG.collection}` +
+    `?fields=id,titulo,descricao,tema,modelo,sort,fotos.ordem,fotos.arquivo.id` +
+    `&sort=sort&limit=100`;
 
   try {
     const res = await fetch(url);
@@ -59,63 +60,32 @@ async function fetchPortfolio() {
 }
 
 // ============================================================
-// Mapear resposta do Contentful para objetos simples
+// Mapear resposta do Directus para objetos simples
 // ============================================================
 function parseItems(data) {
-  const assets = {};
-  if (data.includes && data.includes.Asset) {
-    for (const asset of data.includes.Asset) {
-      assets[asset.sys.id] = {
-        url: 'https:' + asset.fields.file.url,
-        title: asset.fields.title || '',
-      };
-    }
-  }
+  const toFacet = (arr) =>
+    (Array.isArray(arr) ? arr : [])
+      .map((c) => ({ key: String(c).toLowerCase().trim(), label: String(c).trim() }))
+      .filter((e) => e.key.length > 0);
 
-  return data.items.map((item) => {
-    const fields = item.fields;
+  return (data.data || []).map((item) => {
+    const images = (item.fotos || [])
+      .slice()
+      .sort((a, b) => (a.ordem ?? 0) - (b.ordem ?? 0))
+      .map((f) => (f.arquivo?.id ? `${CONFIG.baseUrl}/assets/${f.arquivo.id}` : null))
+      .filter(Boolean);
 
-    // foto pode ser um link único ou um array de links
-    const fotoField = fields.foto;
-    const images = [];
-    if (Array.isArray(fotoField)) {
-      for (const ref of fotoField) {
-        const id = ref.sys?.id;
-        if (id && assets[id]) images.push(assets[id].url);
-      }
-    } else if (fotoField?.sys?.id && assets[fotoField.sys.id]) {
-      images.push(assets[fotoField.sys.id].url);
-    }
-
-    // descricao pode ser Rich Text (objeto) ou texto simples
-    let description = '';
-    if (typeof fields.descricao === 'string') {
-      description = fields.descricao;
-    } else if (fields.descricao?.content) {
-      description = fields.descricao.content
-        .filter((block) => block.nodeType === 'paragraph')
-        .map((block) => block.content.map((node) => node.value || '').join(''))
-        .join(' ');
-    }
-
-    // tema (key lowercase para filtro, label original para exibição)
-    const temaEntries = Array.isArray(fields.tema)
-      ? fields.tema.map((c) => ({ key: c.toLowerCase().trim(), label: c.trim() }))
-      : [];
-
-    // modelo (mesmo padrão)
-    const modeloEntries = Array.isArray(fields.modelo)
-      ? fields.modelo.map((c) => ({ key: c.toLowerCase().trim(), label: c.trim() }))
-      : [];
+    const temas = toFacet(item.tema);
+    const modelos = toFacet(item.modelo);
 
     return {
-      title: fields.titulo || '',
-      description,
+      title: item.titulo || '',
+      description: item.descricao || '',
       images,
-      temas: temaEntries.map((e) => e.key),
-      temaLabels: temaEntries.map((e) => e.label),
-      modelos: modeloEntries.map((e) => e.key),
-      modeloLabels: modeloEntries.map((e) => e.label),
+      temas: temas.map((e) => e.key),
+      temaLabels: temas.map((e) => e.label),
+      modelos: modelos.map((e) => e.key),
+      modeloLabels: modelos.map((e) => e.label),
     };
   });
 }
@@ -183,7 +153,7 @@ function renderGallery(items) {
       <article class="gallery-item"
                data-images="${escapeAttr(JSON.stringify(item.images))}"
                data-caption="${escapeAttr(item.title)}${item.description ? ' — ' + escapeAttr(item.description) : ''}">
-        <img src="${escapeAttr(item.images[0])}?w=600&amp;h=600&amp;fit=fill&amp;q=80&amp;fm=webp"
+        <img src="${escapeAttr(item.images[0])}?${THUMB_PARAMS}"
              alt="${escapeAttr(item.title)}"
              loading="lazy">
         ${item.images.length > 1 ? `<span class="gallery-item-badge">${item.images.length} fotos</span>` : ''}
@@ -221,7 +191,7 @@ function showSlide(index) {
   modalImg.classList.add('is-loading');
   modal.classList.add('is-loading');
 
-  const newSrc = carouselImages[index] + '?w=1200&q=85&fm=webp';
+  const newSrc = carouselImages[index] + '?' + FULL_PARAMS;
 
   const img = new Image();
   img.onload = () => {
@@ -333,17 +303,6 @@ function escapeAttr(str) {
 // Init
 // ============================================================
 async function init() {
-  // Verifica se as credenciais foram configuradas
-  if (CONFIG.spaceId === 'SEU_SPACE_ID' || CONFIG.accessToken === 'SEU_ACCESS_TOKEN') {
-    loading.hidden = true;
-    emptyState.hidden = false;
-    emptyState.innerHTML = '<p>Configure suas credenciais do Contentful no arquivo <code>app.js</code></p>';
-    console.warn(
-      'Contentful não configurado. Edite CONFIG no app.js com seu spaceId e accessToken.'
-    );
-    return;
-  }
-
   allItems = await fetchPortfolio();
 
   // Constrói os mapas de tema e modelo a partir da resposta da API
