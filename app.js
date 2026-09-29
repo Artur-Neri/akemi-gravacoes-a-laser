@@ -14,7 +14,6 @@ const FULL_PARAMS  = 'width=1200&quality=85&format=webp';
 // Elementos do DOM
 // ============================================================
 const gallery = document.getElementById('gallery');
-const loading = document.getElementById('loading');
 const emptyState = document.getElementById('empty');
 const modal = document.getElementById('modal');
 const modalImg = document.getElementById('modal-img');
@@ -38,6 +37,23 @@ let temaMap = {};
 let modeloMap = {};
 
 const filters = document.getElementById('filters');
+
+// ============================================================
+// Reveal dos cards ao rolar
+// ============================================================
+const itemObserver = 'IntersectionObserver' in window
+  ? new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            itemObserver.unobserve(entry.target);
+          }
+        }
+      },
+      { rootMargin: '0px 0px -40px 0px' }
+    )
+  : null;
 
 // ============================================================
 // Buscar itens do Directus
@@ -136,9 +152,22 @@ function getFilteredItems() {
   });
 }
 
-function renderGallery(items) {
-  loading.hidden = true;
+function renderSkeletons(count = 6) {
+  gallery.innerHTML = Array.from(
+    { length: count },
+    () => `
+      <div class="skeleton-card" aria-hidden="true">
+        <div class="skeleton-thumb"></div>
+        <div class="skeleton-body">
+          <span class="skeleton-tag"></span>
+          <span class="skeleton-line"></span>
+          <span class="skeleton-line skeleton-line-short"></span>
+        </div>
+      </div>`
+  ).join('');
+}
 
+function renderGallery(items) {
   if (items.length === 0) {
     emptyState.hidden = false;
     gallery.innerHTML = '';
@@ -151,6 +180,8 @@ function renderGallery(items) {
     .map(
       (item) => `
       <article class="gallery-item"
+               tabindex="0"
+               aria-label="Ver detalhes: ${escapeAttr(item.title || 'trabalho')}"
                data-images="${escapeAttr(JSON.stringify(item.images))}"
                data-caption="${escapeAttr(item.title)}${item.description ? ' — ' + escapeAttr(item.description) : ''}">
         <img src="${escapeAttr(item.images[0])}?${THUMB_PARAMS}"
@@ -170,13 +201,25 @@ function renderGallery(items) {
     `
     )
     .join('');
+
+  gallery.querySelectorAll('.gallery-item').forEach((el, i) => {
+    el.style.setProperty('--reveal-delay', `${Math.min(i, 8) * 45}ms`);
+    if (itemObserver) itemObserver.observe(el);
+    else el.classList.add('in-view');
+  });
 }
 
 // ============================================================
 // Modal / Carrossel
 // ============================================================
+function resetZoom() {
+  modalImg.classList.remove('is-zoomed');
+  modalImg.style.transformOrigin = '';
+}
+
 function showSlide(index) {
   carouselIndex = index;
+  resetZoom();
 
   const hasMultiple = carouselImages.length > 1;
   modalPrev.hidden = !hasMultiple;
@@ -209,10 +252,7 @@ function showSlide(index) {
   img.src = newSrc;
 }
 
-gallery.addEventListener('click', (e) => {
-  const item = e.target.closest('.gallery-item');
-  if (!item) return;
-
+function openItem(item) {
   carouselImages = JSON.parse(item.dataset.images);
   carouselCaption = item.dataset.caption;
 
@@ -221,6 +261,19 @@ gallery.addEventListener('click', (e) => {
   modal.hidden = false;
   document.body.style.overflow = 'hidden';
   modalClose.focus();
+}
+
+gallery.addEventListener('click', (e) => {
+  const item = e.target.closest('.gallery-item');
+  if (item) openItem(item);
+});
+
+gallery.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const item = e.target.closest('.gallery-item');
+  if (!item) return;
+  e.preventDefault();
+  openItem(item);
 });
 
 gallery.addEventListener('focusin', (e) => {
@@ -232,6 +285,7 @@ function closeModal() {
   modal.hidden = true;
   modalImg.src = '';
   carouselImages = [];
+  resetZoom();
   document.body.style.overflow = '';
   if (lastFocusedElement) lastFocusedElement.focus();
 }
@@ -255,6 +309,19 @@ modal.addEventListener('click', (e) => {
   if (e.target === modal) closeModal();
 });
 
+// Zoom na imagem: clique alterna aproximar/afastar no ponto clicado
+modalImg.addEventListener('click', (e) => {
+  if (modalImg.classList.contains('is-zoomed')) {
+    resetZoom();
+    return;
+  }
+  const rect = modalImg.getBoundingClientRect();
+  const x = ((e.clientX - rect.left) / rect.width) * 100;
+  const y = ((e.clientY - rect.top) / rect.height) * 100;
+  modalImg.style.transformOrigin = `${x}% ${y}%`;
+  modalImg.classList.add('is-zoomed');
+});
+
 document.addEventListener('keydown', (e) => {
   if (modal.hidden) return;
   if (e.key === 'Escape') closeModal();
@@ -273,6 +340,7 @@ modal.addEventListener('touchstart', (e) => {
 }, { passive: true });
 
 modal.addEventListener('touchend', (e) => {
+  if (modalImg.classList.contains('is-zoomed')) return;
   touchEndX = e.changedTouches[0].screenX;
   const diff = touchStartX - touchEndX;
   if (Math.abs(diff) > 50) {
@@ -303,6 +371,7 @@ function escapeAttr(str) {
 // Init
 // ============================================================
 async function init() {
+  renderSkeletons();
   allItems = await fetchPortfolio();
 
   // Constrói os mapas de tema e modelo a partir da resposta da API

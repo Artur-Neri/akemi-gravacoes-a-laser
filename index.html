@@ -5,8 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Akemi - Gravações a Laser</title>
   <meta name="description" content="Portfolio de gravações a laser personalizadas. Copos, placas, chaveiros e muito mais. Entre em contato pelo WhatsApp!">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Akemi — Gravações a Laser">
+  <meta property="og:description" content="Gravação a laser personalizada em copos, placas, chaveiros e muito mais. Presentes e brindes feitos sob medida.">
+  <meta property="og:url" content="https://arturneri.me/akemi-gravacoes-a-laser/">
+  <meta property="og:image" content="https://arturneri.me/akemi-gravacoes-a-laser/assets/thumb.png">
+  <meta name="twitter:card" content="summary_large_image">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' https://cms.arturneri.me data:; connect-src https://cms.arturneri.me;">
-  <link rel="icon" href="data:," />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
@@ -15,28 +20,42 @@
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="header">
-    <div class="container">
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container hero-inner">
+      <p class="hero-eyebrow">Gravações a Laser</p>
       <h1 class="logo">Akemi</h1>
-      <p class="tagline">Gravações a Laser</p>
+      <p class="hero-text">Personalização a laser para presentes, brindes e datas especiais — feita sob medida para você.</p>
+      <div class="hero-actions">
+        <a href="https://wa.me/5514991336103?text=Ol%C3%A1!%20Vi%20seu%20portfolio%20e%20gostaria%20de%20saber%20mais%20sobre%20grava%C3%A7%C3%B5es%20%C3%A0%20laser."
+           class="hero-btn hero-btn-primary"
+           target="_blank"
+           rel="noopener noreferrer">Pedir orçamento</a>
+        <a href="#portfolio" class="hero-btn hero-btn-ghost">Ver trabalhos</a>
+      </div>
     </div>
   </header>
 
   <!-- Portfolio -->
-  <main class="portfolio">
+  <main id="portfolio" class="portfolio">
     <div class="container">
-      <h2 class="section-title">Nossos Trabalhos</h2>
+      <div class="section-head">
+        <p class="section-eyebrow">Portfólio</p>
+        <h2 class="section-title">Nossos Trabalhos</h2>
+      </div>
       <div id="filters" class="filters"></div>
       <div id="gallery" class="gallery">
         <!-- Fotos carregadas via CMS -->
       </div>
-      <div id="loading" class="loading">
-        <div class="spinner"></div>
-        <p>Carregando portfolio...</p>
-      </div>
       <div id="empty" class="empty-state" hidden>
+        <svg class="empty-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2l1.9 5.9a2 2 0 001.3 1.3L21 11l-5.8 1.9a2 2 0 00-1.3 1.3L12 20l-1.9-5.8a2 2 0 00-1.3-1.3L3 11l5.8-1.9a2 2 0 001.3-1.3L12 2z"/>
+        </svg>
         <p>Em breve novos trabalhos por aqui!</p>
+        <a class="empty-cta"
+           href="https://wa.me/5514991336103?text=Ol%C3%A1!%20Vi%20seu%20portfolio%20e%20gostaria%20de%20saber%20mais%20sobre%20grava%C3%A7%C3%B5es%20%C3%A0%20laser."
+           target="_blank"
+           rel="noopener noreferrer">Fale com a gente</a>
       </div>
     </div>
   </main>
@@ -66,7 +85,7 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <div class="container footer-grid">
+    <div class="container footer-inner">
       <a href="https://www.instagram.com/akemimiyashiro"
          class="instagram-link"
          target="_blank"
@@ -78,7 +97,6 @@
         <span class="instagram-text">@akemimiyashiro</span>
       </a>
       <p>&copy; 2026 Akemi &mdash; Gravações a Laser</p>
-      <span></span>
     </div>
   </footer>
 
